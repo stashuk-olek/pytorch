@@ -288,6 +288,7 @@ def do_bench_using_profiling(
     for _ in range(n_warmup):
         fn()
 
+    torch.cuda.synchronize()
     with torch.profiler.profile(
         activities=[
             torch.profiler.ProfilerActivity.CUDA,
@@ -301,7 +302,6 @@ def do_bench_using_profiling(
             fn()
         # Record clocks
         torch.cuda.synchronize()
-
     log.debug("raw events")
     log.debug(p.key_averages().table(sort_by="self_device_time_total", row_limit=-1))
 
